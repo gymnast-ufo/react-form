@@ -32,6 +32,7 @@ export default defineConfig([
           ignoreRestSiblings: true,
         },
       ],
+      '@typescript-eslint/no-unused-expressions': 'off',
     },
   },
 ])
