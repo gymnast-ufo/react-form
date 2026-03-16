@@ -33,6 +33,8 @@ export default defineConfig([
         },
       ],
       '@typescript-eslint/no-unused-expressions': 'off',
+      'react-refresh/only-export-components': 'off',
+      'no-unsafe-finally': 'off',
     },
   },
 ])

@@ -52,7 +52,8 @@ const FormActions = (
   const handleNext = (event: SyntheticEvent) => {
     event.preventDefault()
     event.stopPropagation()
-    isLastStep ? form.submit() : onNext?.(event)
+    form.submit()
+    onNext?.(event)
   }
 
   const handlePrev = (event: SyntheticEvent) => {
