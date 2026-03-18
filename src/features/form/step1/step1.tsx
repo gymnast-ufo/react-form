@@ -1,51 +1,60 @@
+import type { IRequestForm } from '@/entities'
 import { FieldPhoneNumber, phoneNumberField, stringField } from '@/shared'
 import { Grid } from '@mui/material'
 import { Autocomplete, TextField } from 'mui-rff'
+
+const phoneMask = '0___ ___ ___'
 
 export const Step1 = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <FieldPhoneNumber label="Phone" name="phone" mask="0999 999 999" required />
+        <TextField label="Имя" name="firstName" fullWidth required />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <TextField label="Name" name="name" fullWidth required />
+        <TextField label="Фамилия" name="lastName" fullWidth required />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <TextField label="Last Name" name="lastName" fullWidth required />
+        <FieldPhoneNumber label="Телефон" name="phone" mask={phoneMask} required />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <Autocomplete label="Gender" name="gender" options={genderOptions} fullWidth required />
+        <Autocomplete
+          label="Пол"
+          name="gender"
+          options={genderOptions}
+          fullWidth
+          required
+          getOptionValue={(option) => option.value}
+        />
       </Grid>
     </Grid>
   )
 }
 
-export type FormValues = {
-  phone: string
-  name: string
-  lastName: string
-  gender: string
-}
+export type FormValues = Pick<IRequestForm, 'firstName' | 'lastName' | 'phone' | 'gender'>
 
 export const getInitialValues = (props?: Partial<FormValues>): FormValues => {
   return {
-    phone: '',
-    name: '',
-    lastName: '',
-    gender: '',
-    ...props,
+    firstName: stringField.parse(props?.firstName),
+    lastName: stringField.parse(props?.lastName),
+    phone: phoneNumberField.parse(props?.phone) || '',
+    gender: stringField.parse(props?.gender),
   }
 }
 
-export const schemaStep1 = {
-  name: stringField.schema(false).required(),
-  lastName: stringField.schema(false).required(),
-  gender: stringField.schema(false).required(),
-  phone: phoneNumberField.schema().required(),
-}
-
 const genderOptions = [
-  { label: 'Male', value: 'male' },
-  { label: 'Female', value: 'female' },
+  { label: 'Мужской', value: 'male' },
+  { label: 'Женский', value: 'female' },
 ]
+const genderValues = genderOptions.map((option) => option.value)
+
+export const schemaStep1 = {
+  firstName: stringField.schema().label('Имя').min(2).max(255).required(),
+  lastName: stringField.schema().label('Фамилия').min(2).max(255).required(),
+  gender: stringField
+    .schema()
+    .label('Пол')
+    .valid(...genderValues)
+    .required(),
+  phone: phoneNumberField.schema(phoneMask).label('Телефон').required(),
+}

@@ -1,12 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { FormValues } from './step2'
+import { getInitialValues, type FormValues } from './step2'
 
 export const step2Slice = createSlice({
   name: 'step2',
-  initialState: {
-    jobAddress: '',
-    address: '',
-  } as FormValues,
+  initialState: getInitialValues(),
   reducers: {
     setValues: (state, action: PayloadAction<FormValues>) => {
       state.jobAddress = action.payload.jobAddress

@@ -1,8 +1,9 @@
 import { Form, makeJoiRffValidator } from '@/shared'
 import { Step2, type FormValues, getInitialValues, schemaStep2 } from './step2'
 import Joi from 'joi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setValues } from './step2.store'
+import type { RootState } from '@/app/store'
 
 interface Step2FormProps {
   onPrev?: (values: FormValues) => void
@@ -11,6 +12,7 @@ interface Step2FormProps {
 
 export const Step2Form = ({ onPrev, onSubmit }: Step2FormProps) => {
   const dispatch = useDispatch()
+  const state = useSelector((store: RootState) => store.step2)
 
   const handlePrev = (values: FormValues) => {
     dispatch(setValues(values))
@@ -22,7 +24,7 @@ export const Step2Form = ({ onPrev, onSubmit }: Step2FormProps) => {
     onSubmit?.(values)
   }
 
-  const initialValues = getInitialValues()
+  const initialValues = getInitialValues(state)
 
   return (
     <Form
