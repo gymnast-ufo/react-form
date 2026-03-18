@@ -32,9 +32,9 @@ export default defineConfig([
           ignoreRestSiblings: true,
         },
       ],
-      '@typescript-eslint/no-unused-expressions': 'off',
-      'react-refresh/only-export-components': 'off',
-      'no-unsafe-finally': 'off',
+      '@typescript-eslint/no-unused-expressions': 'warn',
+      'react-refresh/only-export-components': 'warn',
+      'no-unsafe-finally': 'warn',
     },
   },
 ])

@@ -4,16 +4,18 @@ import type { SyntheticEvent } from 'react'
 import { Loader } from '../../ui'
 import { checkIsSubmitDisabled } from './helpers'
 
-interface IFormProps extends FormProps {
+interface IFormProps<T> extends FormProps<T> {
   loading?: boolean
-  isFirstStep: boolean
-  isLastStep: boolean
-  onPrev: (event: SyntheticEvent) => void
-  onNext: (event: SyntheticEvent) => void
+  isFirstStep?: boolean
+  isLastStep?: boolean
+  onPrev?: (values: T) => void
 }
 
-export const Form = (props: IFormProps) => {
-  const { children, loading, isFirstStep, isLastStep, onPrev, onNext, ...formProps } = props
+export function Form<T extends object>(
+  props: IFormProps<T> & { initialValues: T | Partial<T> }
+): ReturnType<typeof FinalForm>
+export function Form<T extends object>(props: IFormProps<T>) {
+  const { children, loading, isFirstStep, isLastStep, onPrev, ...formProps } = props
 
   if (loading) return <Loader />
 
@@ -21,7 +23,7 @@ export const Form = (props: IFormProps) => {
     <FinalForm
       {...formProps}
       render={(formRenderProps) => (
-        <form onSubmit={formRenderProps.handleSubmit} noValidate>
+        <form onSubmit={formRenderProps.handleSubmit} noValidate autoComplete="off">
           {typeof children === 'function' ? children(formRenderProps) : children}
           {!formRenderProps.modifiedSinceLastSubmit && formRenderProps.submitError && (
             <DialogContentText color="error" sx={{ textAlign: 'center', mt: 2 }}>
@@ -29,37 +31,23 @@ export const Form = (props: IFormProps) => {
             </DialogContentText>
           )}
 
-          <FormActions
-            isFirstStep={isFirstStep}
-            isLastStep={isLastStep}
-            onNext={onNext}
-            onPrev={onPrev}
-          />
+          <FormActions<T> isFirstStep={isFirstStep} isLastStep={isLastStep} onPrev={onPrev} />
         </form>
       )}
     />
   )
 }
 
-const FormActions = (
-  props: Pick<IFormProps, 'isFirstStep' | 'isLastStep' | 'onNext' | 'onPrev'>
-) => {
-  const { isFirstStep, isLastStep, onNext, onPrev } = props
-  const form = useForm()
-  const formState = useFormState()
+const FormActions = <T,>(props: Pick<IFormProps<T>, 'isFirstStep' | 'isLastStep' | 'onPrev'>) => {
+  const { isFirstStep, isLastStep, onPrev } = props
+  const form = useForm<T>()
+  const formState = useFormState<T>()
   const submitDisabled = checkIsSubmitDisabled(formState)
-
-  const handleNext = (event: SyntheticEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    form.submit()
-    onNext?.(event)
-  }
 
   const handlePrev = (event: SyntheticEvent) => {
     event.preventDefault()
     event.stopPropagation()
-    onPrev?.(event)
+    onPrev?.(formState.values as T)
   }
 
   return (
@@ -68,7 +56,7 @@ const FormActions = (
         Previous
       </Button>
 
-      <Button color="primary" variant="contained" disabled={!!submitDisabled} onClick={handleNext}>
+      <Button color="primary" variant="contained" disabled={!!submitDisabled} onClick={form.submit}>
         {isLastStep ? 'Create' : 'Next'}
       </Button>
     </Stack>

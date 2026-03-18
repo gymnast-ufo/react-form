@@ -1,7 +1,7 @@
 import type { FormState, ValidationErrors } from 'final-form'
 import { castArray, isObject } from 'lodash'
 
-export function checkIsSubmitDisabled(props: Partial<FormState>): string | false {
+export function checkIsSubmitDisabled<T>(props: Partial<FormState<T>>): string | false {
   const {
     dirty,
     submitting,

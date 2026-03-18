@@ -14,6 +14,13 @@ export const stringField = {
   prepare: defaultStringNormalizer,
 }
 
+export const numberField = {
+  schema: () => Joi.number(),
+  parse: (v?: string | number | null) =>
+    (!isNaN(Number(v)) ? Number(v).toString() : undefined) as number | undefined,
+  prepare: (v?: string | number | null) => Number(v) || undefined,
+}
+
 export const phoneNumberField = {
   schema: () =>
     Joi.string()
