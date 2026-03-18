@@ -2,7 +2,6 @@ import { Form as FinalForm, useForm, type FormProps, useFormState } from 'react-
 import { Button, DialogContentText, Stack } from '@mui/material'
 import type { SyntheticEvent } from 'react'
 import { Loader } from '../../ui'
-import { checkIsSubmitDisabled } from './helpers'
 
 interface IFormProps<T> extends FormProps<T> {
   loading?: boolean
@@ -42,7 +41,6 @@ const FormActions = <T,>(props: Pick<IFormProps<T>, 'isFirstStep' | 'isLastStep'
   const { isFirstStep, isLastStep, onPrev } = props
   const form = useForm<T>()
   const formState = useFormState<T>()
-  const submitDisabled = checkIsSubmitDisabled(formState)
 
   const handlePrev = (event: SyntheticEvent) => {
     event.preventDefault()
@@ -51,13 +49,13 @@ const FormActions = <T,>(props: Pick<IFormProps<T>, 'isFirstStep' | 'isLastStep'
   }
 
   return (
-    <Stack direction="row" spacing={1}>
+    <Stack direction="row" spacing={2} sx={{ mt: 4, justifyContent: 'center' }}>
       <Button variant="outlined" disabled={isFirstStep} onClick={handlePrev}>
-        Previous
+        Назад
       </Button>
 
-      <Button color="primary" variant="contained" disabled={!!submitDisabled} onClick={form.submit}>
-        {isLastStep ? 'Create' : 'Next'}
+      <Button color="primary" variant="contained" onClick={form.submit}>
+        {isLastStep ? 'Создать' : 'Далее'}
       </Button>
     </Stack>
   )

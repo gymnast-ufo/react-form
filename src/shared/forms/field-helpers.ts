@@ -1,5 +1,3 @@
-import { clearPhoneNumber, formatPhoneNumber } from '../utils'
-import { parsePhoneNumberWithError } from 'libphonenumber-js'
 import Joi from 'joi'
 
 const defaultStringNormalizer = (value?: string | null, spaceAllowed = true) =>
@@ -9,35 +7,28 @@ export const stringField = {
   schema: (spaceAllowed = true) =>
     Joi.string()
       .trim()
-      .replace(/(\s)+/g, spaceAllowed ? '$1' : ''),
+      .replace(/(\s)+/g, spaceAllowed ? '$1' : '')
+      .messages(localizedMessages),
   parse: defaultStringNormalizer,
   prepare: defaultStringNormalizer,
 }
 
 export const numberField = {
-  schema: () => Joi.number(),
+  schema: () => Joi.number().messages(localizedMessages),
   parse: (v?: string | number | null) =>
     (!isNaN(Number(v)) ? Number(v).toString() : undefined) as number | undefined,
   prepare: (v?: string | number | null) => Number(v) || undefined,
 }
 
-export const phoneNumberField = {
-  schema: () =>
-    Joi.string()
-      .custom((value) => {
-        const clean = clearPhoneNumber(value)
-        try {
-          const phoneNumber = parsePhoneNumberWithError(clean)
-          if (!phoneNumber?.isValid()) {
-            throw new Error()
-          }
-          return
-        } catch (e) {
-          throw new Error('did not seem to be a phone number')
-        }
-      })
-      .messages({ 'any.custom': '{{#label}} {{#error.message}}' }),
-
-  parse: formatPhoneNumber,
-  prepare: clearPhoneNumber,
+export const localizedMessages = {
+  'string.base': '{{#label}} должно быть строкой',
+  'string.empty': '{{#label}} не может быть пустым',
+  'string.min': 'Минимальная длина {#limit}',
+  'string.max': 'Максимальная длина {#limit}',
+  'string.pattern.base': 'Неверный формат',
+  'any.only': '{{#label}} должно быть одним из {{#valids}}',
+  'any.required': 'Обязательное поле',
+  'any.custom': '{{#label}} {{#error.message}}',
+  'number.base': 'Должно быть числом',
+  'number.min': 'Минимальное значение {#limit}',
 }

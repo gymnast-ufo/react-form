@@ -1,5 +1,13 @@
-import { NumberField, type NumberFieldInputProps } from '@base-ui/react/number-field'
-import { Box, Slider, Typography } from '@mui/material'
+import {
+  Box,
+  Grid,
+  Input,
+  Slider,
+  Typography,
+  styled,
+  type SliderProps,
+  type InputProps,
+} from '@mui/material'
 import { useField } from 'react-final-form'
 
 interface IFieldSliderProps {
@@ -10,10 +18,22 @@ interface IFieldSliderProps {
   step?: number
   marks?: boolean
   withInput?: boolean
+  inputProps?: InputProps
+  sliderProps?: SliderProps
 }
 
 export const FieldSlider = (props: IFieldSliderProps) => {
-  const { name, label, min = 0, max = 100, step = 1, marks, withInput = true } = props
+  const {
+    name,
+    label,
+    min = 0,
+    max = 100,
+    step = 1,
+    marks,
+    withInput = true,
+    inputProps,
+    sliderProps,
+  } = props
 
   const { input } = useField(name)
 
@@ -21,7 +41,7 @@ export const FieldSlider = (props: IFieldSliderProps) => {
     input.onChange(value)
   }
 
-  const handleInputChange: NumberFieldInputProps['onChange'] = (event) => {
+  const handleInputChange: InputProps['onChange'] = (event) => {
     input.onChange(Number(event.target.value))
   }
 
@@ -31,13 +51,42 @@ export const FieldSlider = (props: IFieldSliderProps) => {
         {label}
       </Typography>
 
-      <Slider min={min} max={max} step={step} marks={marks} onChange={handleSliderChange} />
+      <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+        <Grid size="grow">
+          <Slider
+            min={min}
+            max={max}
+            step={step}
+            marks={marks}
+            value={input.value}
+            onChange={handleSliderChange}
+            aria-labelledby={`${name}-slider`}
+            {...sliderProps}
+          />
+        </Grid>
 
-      {withInput && (
-        <NumberField.Root min={min} max={max} step={step}>
-          <NumberField.Input onChange={handleInputChange} onBlur={handleInputChange} />
-        </NumberField.Root>
-      )}
+        {withInput && (
+          <Grid>
+            <StyledInput
+              value={input.value}
+              onChange={handleInputChange}
+              onBlur={handleInputChange}
+              inputProps={{
+                min: min,
+                max: max,
+                step: step,
+                type: 'number',
+                'aria-labelledby': `${name}-slider`,
+              }}
+              {...inputProps}
+            />
+          </Grid>
+        )}
+      </Grid>
     </Box>
   )
 }
+
+const StyledInput = styled(Input)({
+  width: 80,
+})

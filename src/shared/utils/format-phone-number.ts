@@ -4,7 +4,7 @@ export const clearPhoneNumber = (number?: string | number | null) => {
   if (!number) return ''
   const onlyDigits = number.toString().replace(/\D/g, '')
   if (isNaN(+onlyDigits) || onlyDigits.length === 0) return ''
-  return `+${onlyDigits}`
+  return onlyDigits
 }
 
 export const formatPhoneNumber = (number?: string | number | null): string | null => {

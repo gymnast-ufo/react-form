@@ -1,4 +1,4 @@
 export { Form } from './form/form'
-export { stringField, phoneNumberField, numberField } from './field-helpers'
-export { FieldPhoneNumber } from './field-phone-number/field-phone-number'
+export { stringField, numberField } from './field-helpers'
+export { FieldPhoneNumber, phoneNumberField } from './field-phone-number/field-phone-number'
 export { FieldSlider } from './field-slider/field-slider'
