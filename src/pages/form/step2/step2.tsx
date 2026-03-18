@@ -2,11 +2,11 @@ import { Step2Form } from '@/features'
 import { Container } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-export const Step2Page = () => {
+const Step2Page = () => {
   const navigate = useNavigate()
 
   const handlePrev = () => {
-    navigate('/step1')
+    navigate('/')
   }
 
   const handleSubmit = () => {
@@ -19,3 +19,5 @@ export const Step2Page = () => {
     </Container>
   )
 }
+
+export default Step2Page

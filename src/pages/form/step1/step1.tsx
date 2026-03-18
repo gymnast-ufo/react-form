@@ -2,7 +2,7 @@ import { Step1Form } from '@/features'
 import { Container } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
-export const Step1Page = () => {
+const Step1Page = () => {
   const navigate = useNavigate()
 
   const handleSubmit = () => {
@@ -15,3 +15,5 @@ export const Step1Page = () => {
     </Container>
   )
 }
+
+export default Step1Page
